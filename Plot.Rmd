@@ -49,7 +49,7 @@ p <- ggplot(data, aes(x = value, y = country_ordered)) +
       caption = "Author: Thomas Camminady • Source: eurovisionworld.com • Repo: github.com/thomascamminady/eurovision_song_contest_data_set",
 
   title = paste0(
-  "<b style='font-size:14pt;'>Top 5 Countries Eurovision Song Contest</b><br><br>",
+  "<b style='font-size:14pt;'>Top 5 Countries at the Eurovision Song Contest</b><br><br>",
   "<span style='color:gray40;'>How the <b style='color:#8c6bb1;'>public vote</b> and the <b style='color:#e6550d;'>jury vote</b> affect the <b style='color:black;'>total rank</b>.</span>"
 )
 ) +
