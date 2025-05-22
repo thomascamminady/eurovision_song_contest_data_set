@@ -1,0 +1,100 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(tidytext)
+library(forcats)
+library(ggtext)
+```
+
+
+```{r}
+data <- read_csv("ideation/final.csv") %>%
+  group_by(year, variable) %>%
+  mutate(country_ordered = reorder_within(country_receives_full, -rank, year)) %>%
+  ungroup()
+```
+
+```{r}
+
+
+p <- ggplot(data, aes(x = value, y = country_ordered)) +
+  geom_line() +
+  geom_point(aes(color = variable),size=2) +
+  facet_grid(year ~ ., scales = "free") +
+  scale_y_reordered() +  # necessary to strip the reorder_within suffix
+  scale_x_discrete(limits = as.character(1:25)) + 
+  theme_minimal()+
+  theme(text = element_text(size = 8)) 
+
+p
+
+```
+
+
+```{r}
+
+ggsave(p,width=7,filename="chart.png",bg="white")
+```
+
+
+
+
+```{r}
+data <- read_csv("ideation/final.csv") %>%
+  group_by(year, variable) %>%
+  mutate(country_ordered = reorder_within(country_receives_full, -rank, year)) %>%
+  ungroup()
+# Ensure year is treated as factor and ordered reversed
+data$year <- factor(data$year, levels = sort(unique(data$year), decreasing = TRUE))
+
+ 
+p <- ggplot(data, aes(x = value, y = country_ordered)) +
+  # Light gray lines
+  geom_line(color = "lightgray",size=1) +
+  # rank_total: large black
+  geom_point(data = subset(data, variable == "rank_total"), 
+             color = "black", size = 3) +
+  # rank_jury: small red
+  geom_point(data = subset(data, variable == "rank_jury"), 
+             color = "#e6550d", size = 2) +
+  # rank_public: small green
+  geom_point(data = subset(data, variable == "rank_public"), 
+             color = "#8c6bb1", size = 2) +
+  # Facet
+  facet_grid(year ~ ., scales = "free") +
+  # Strip reorder suffix
+  scale_y_reordered() +
+  # x-axis with limits and breaks
+  scale_x_continuous(breaks = 1:25, limits = c(1, 25)) +
+  # Labels and styling
+  labs(
+  x = "Rank",
+  y = NULL,
+      caption = "Author: Thomas Camminady • Source: eurovisionworld.com • Repo: github.com/thomascamminady/eurovision_song_contest_data_set",
+
+  title = paste0(
+    "<span style='font-size:14pt; color:gray40;'>Top 5 Countries Eurovision Song Contest</span><br><br>",
+    "<span style='color:gray40;'>How the <b style='color:#00BA38;'>public vote</b> and the <b style='color:#F8766D;'>jury vote</b> affect the <b style='color:black;'>total rank</b>.</span>"
+  )
+) +
+ 
+  theme_minimal(base_size = 8) +
+  theme(
+    text = element_text(color = "gray40"),
+    axis.text = element_text(color = "gray40"),
+    axis.title.x = element_text(color = "gray40"),
+    strip.text.y = element_text(angle = 0, hjust = 0, color = "gray40"),
+    legend.position = "none",
+    plot.title = element_markdown(hjust = 0.5, color = "gray40"),
+  )
+ggsave(p,width=7,filename="chart.png",bg="white",dpi = 300)
+
+p
+```
