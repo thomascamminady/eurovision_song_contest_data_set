@@ -41,7 +41,7 @@ p <- ggplot(data, aes(x = value, y = country_ordered)) +
   # Strip reorder suffix
   scale_y_reordered() +
   # x-axis with limits and breaks
-  scale_x_continuous(breaks = 1:25, limits = c(1, 25)) +
+  scale_x_continuous(breaks = 1:17, limits = c(1, 17)) +
   # Labels and styling
   labs(
   x = "Rank",
