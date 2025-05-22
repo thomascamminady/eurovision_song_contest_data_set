@@ -27,15 +27,18 @@ data$year <- factor(data$year, levels = sort(unique(data$year), decreasing = TRU
 p <- ggplot(data, aes(x = value, y = country_ordered)) +
   # Light gray lines
   geom_line(color = "darkgray",size=0.8) +
-  # rank_total: large black
   geom_point(data = subset(data, variable == "rank_total"), 
              color = "black", size = 3.5) +
-  # rank_jury: small red
+  #geom_point(data = subset(data, variable == "rank_total"), 
+  #           color = "white",fill="white", size = 1., shape = "T") +
   geom_point(data = subset(data, variable == "rank_jury"), 
              color = "#e6550d",fill="#e6550d", size = 2., shape = 23) +
-  # rank_public: small green
+  #geom_point(data = subset(data, variable == "rank_jury"), 
+  #           color = "white",fill="white", size = 1., shape = "J") +
   geom_point(data = subset(data, variable == "rank_public"), 
              color = "#8c6bb1", fill = "#8c6bb1",size = 2., shape = 17) +
+  #geom_point(data = subset(data, variable == "rank_public"), 
+  #           color = "white", fill = "white",size = 1., shape = "P") +
   # Facet
   facet_grid(year ~ ., scales = "free") +
   # Strip reorder suffix
@@ -44,12 +47,12 @@ p <- ggplot(data, aes(x = value, y = country_ordered)) +
   scale_x_continuous(breaks = 1:17, limits = c(1, 17)) +
   # Labels and styling
   labs(
-  x = "Rank",
+  x = "",
   y = NULL,
       caption = "Author: Thomas Camminady • Source: eurovisionworld.com • Repo: github.com/thomascamminady/eurovision_song_contest_data_set",
 
   title = paste0(
-  "<b style='font-size:14pt;'>Top 5 Countries at the Eurovision Song Contest</b><br><br>",
+  "<b style='font-size:14pt;'>Eurovision Song Contest Rankings (2016-2025)</b><br><br>",
   "<span style='color:gray40;'>How the <b style='color:#8c6bb1;'>public vote</b> and the <b style='color:#e6550d;'>jury vote</b> affect the <b style='color:black;'>total rank</b>.</span>"
 )
 ) +
@@ -62,9 +65,10 @@ p <- ggplot(data, aes(x = value, y = country_ordered)) +
     strip.text.y = element_text(angle = 0, hjust = 0, color = "gray40"),
     legend.position = "none",
     plot.title = element_markdown(hjust = 0.5, color = "gray40"),
-    plot.caption = element_text(margin = margin(t = 10))
+    plot.caption = element_text(margin = margin(t = 10)),
+    
   )
-ggsave(p,width=6,filename="chart.png",bg="white",dpi = 300)
+ggsave(p,width=7,filename="chart.png",bg="white",dpi = 300)
 
 p
 ```
