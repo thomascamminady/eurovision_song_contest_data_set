@@ -11,33 +11,39 @@ library(ggplot2)
 library(tidytext)
 library(forcats)
 library(ggtext)
+
+data <- read_csv("ideation/final.csv") %>%
+  group_by(year, variable) %>%
+  mutate(country_ordered = reorder_within(country_receives_full, -rank, year)) %>%
+  ungroup()
+
+data$year <- factor(data$year, levels = sort(unique(data$year), decreasing = TRUE))
+
 ```
 
 
 
 ```{r}
-data <- read_csv("ideation/final.csv") %>%
-  group_by(year, variable) %>%
-  mutate(country_ordered = reorder_within(country_receives_full, -rank, year)) %>%
-  ungroup()
-# Ensure year is treated as factor and ordered reversed
-data$year <- factor(data$year, levels = sort(unique(data$year), decreasing = TRUE))
-
- 
 p <- ggplot(data, aes(x = value, y = country_ordered)) +
   # Light gray lines
-  geom_line(color = "darkgray",size=0.8) +
-  geom_point(data = subset(data, variable == "rank_total"), 
-             color = "black", size = 3.5) +
-  #geom_point(data = subset(data, variable == "rank_total"), 
+  geom_line(color = "darkgray", size = 0.8) +
+  geom_point(
+    data = subset(data, variable == "rank_total"),
+    color = "black", size = 3.5
+  ) +
+  # geom_point(data = subset(data, variable == "rank_total"),
   #           color = "white",fill="white", size = 1., shape = "T") +
-  geom_point(data = subset(data, variable == "rank_jury"), 
-             color = "#e6550d",fill="#e6550d", size = 2., shape = 23) +
-  #geom_point(data = subset(data, variable == "rank_jury"), 
+  geom_point(
+    data = subset(data, variable == "rank_jury"),
+    color = "#e6550d", fill = "#e6550d", size = 2., shape = 23
+  ) +
+  # geom_point(data = subset(data, variable == "rank_jury"),
   #           color = "white",fill="white", size = 1., shape = "J") +
-  geom_point(data = subset(data, variable == "rank_public"), 
-             color = "#8c6bb1", fill = "#8c6bb1",size = 2., shape = 17) +
-  #geom_point(data = subset(data, variable == "rank_public"), 
+  geom_point(
+    data = subset(data, variable == "rank_public"),
+    color = "#8c6bb1", fill = "#8c6bb1", size = 2., shape = 17
+  ) +
+  # geom_point(data = subset(data, variable == "rank_public"),
   #           color = "white", fill = "white",size = 1., shape = "P") +
   # Facet
   facet_grid(year ~ ., scales = "free") +
@@ -47,16 +53,14 @@ p <- ggplot(data, aes(x = value, y = country_ordered)) +
   scale_x_continuous(breaks = 1:17, limits = c(1, 17)) +
   # Labels and styling
   labs(
-  x = "",
-  y = NULL,
-      caption = "Author: Thomas Camminady • Source: eurovisionworld.com • Repo: github.com/thomascamminady/eurovision_song_contest_data_set",
-
-  title = paste0(
-  "<b style='font-size:14pt;'>Eurovision Song Contest Rankings (2016-2025)</b><br><br>",
-  "<span style='color:gray40;'>How the <b style='color:#8c6bb1;'>public vote</b> and the <b style='color:#e6550d;'>jury vote</b> affect the <b style='color:black;'>total rank</b>.</span>"
-)
-) +
- 
+    x = "",
+    y = NULL,
+    caption = "Author: Thomas Camminady • Source: eurovisionworld.com • Repo: github.com/thomascamminady/eurovision_song_contest_data_set",
+    title = paste0(
+      "<b style='font-size:14pt;'>Eurovision Song Contest Rankings (2016-2025)</b><br><br>",
+      "<span style='color:gray40;'>How the <b style='color:#8c6bb1;'>public vote</b> and the <b style='color:#e6550d;'>jury vote</b> affect the <b style='color:black;'>total rank</b>.</span>"
+    )
+  ) +
   theme_minimal(base_size = 8) +
   theme(
     text = element_text(color = "gray40"),
@@ -66,9 +70,7 @@ p <- ggplot(data, aes(x = value, y = country_ordered)) +
     legend.position = "none",
     plot.title = element_markdown(hjust = 0.5, color = "gray40"),
     plot.caption = element_text(margin = margin(t = 10)),
-    
   )
-ggsave(p,width=7,filename="chart.png",bg="white",dpi = 300)
+ggsave(p, width = 7, filename = "chart.png", bg = "white", dpi = 300)
 
-p
 ```
